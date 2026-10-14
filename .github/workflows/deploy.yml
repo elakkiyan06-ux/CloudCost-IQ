@@ -1,0 +1,97 @@
+name: CloudCost IQ CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Automated Testing & Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Validate pricing dataset JSON schema
+        run: |
+          python -m pytest backend/tests/test_pricing.py -v
+
+      - name: Run automated test suite (Pytest)
+        run: |
+          python -m pytest backend/tests -v --junitxml=junit/test-results.xml
+
+      - name: Verify Docker build locally
+        run: |
+          docker build -t cloudcost-backend:test .
+
+  deploy:
+    name: Cloud VM Continuous Deployment (AWS EC2)
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Check Deployment Credentials Availability
+        id: check_creds
+        run: |
+          if [ -n "${{ secrets.DEPLOY_HOST }}" ] && [ -n "${{ secrets.DEPLOY_USER }}" ] && [ -n "${{ secrets.DEPLOY_SSH_KEY }}" ]; then
+            echo "configured=true" >> $GITHUB_OUTPUT
+            echo "✅ Target cloud VM secrets detected."
+          else
+            echo "configured=false" >> $GITHUB_OUTPUT
+            echo "⚠️ DEPLOY_HOST, DEPLOY_USER, or DEPLOY_SSH_KEY secrets not set in repository settings."
+            echo "ℹ️ Automated testing passed. Configure GitHub Secrets to enable automatic VM deployment."
+          fi
+
+      - name: Deploy to Cloud VM via SSH
+        if: steps.check_creds.outputs.configured == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+            APP_DIR="/opt/cloudcost-iq"
+            echo "🚀 Updating CloudCost IQ on target VM..."
+            
+            if [ ! -d "$APP_DIR" ]; then
+              sudo mkdir -p "$APP_DIR"
+              sudo chown -R $USER:$USER "$APP_DIR"
+              git clone https://github.com/${{ github.repository }}.git "$APP_DIR"
+            fi
+            
+            cd "$APP_DIR"
+            git fetch origin main
+            git reset --hard origin/main
+            
+            # Execute automated deployment script
+            bash deploy/deploy.sh
+
+      - name: Post-Deployment Health Verification
+        if: steps.check_creds.outputs.configured == 'true'
+        run: |
+          echo "🩺 Polling public health endpoint on target VM..."
+          curl -f --retry 6 --retry-delay 5 "http://${{ secrets.DEPLOY_HOST }}/api/health" || {
+            echo "❌ Remote health check failed after deployment."
+            exit 1
+          }
+          echo "✅ Remote deployment verified healthy on http://${{ secrets.DEPLOY_HOST }}/"

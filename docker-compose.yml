@@ -1,0 +1,58 @@
+# Docker Compose Architecture for CloudCost IQ
+# Multi-container orchestration: Nginx Reverse Proxy + FastAPI Backend + Persistent SQLite Volume
+
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cloudcost-backend
+    restart: unless-stopped
+    environment:
+      - PORT=8000
+      - SQLITE_DB_PATH=/app/data/cloudcost.db
+      - PRICING_DATA_PATH=/app/data/pricing.json
+      - CORS_ORIGINS=*
+    volumes:
+      - cloudcost_data:/app/data
+    networks:
+      - cloudcost_net
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; exit(0 if urllib.request.urlopen('http://localhost:8000/api/health').getcode() == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  web:
+    image: nginx:1.25-alpine
+    container_name: cloudcost-web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - cloudcost_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost/nginx-health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+networks:
+  cloudcost_net:
+    driver: bridge
+
+volumes:
+  cloudcost_data:
+    driver: local

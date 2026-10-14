@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudCost IQ — Cloud Resource Cost Estimator & Optimization Platform</title>
+  <meta name="description" content="Production-ready FinOps cloud resource cost estimator, dual configuration comparison, and rule-based cost optimization platform for DevOps teams.">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Chart.js for data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Left Navigation Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="assets/logo.svg" alt="CloudCost IQ Logo" width="36" height="36">
+        </div>
+        <div class="sidebar-brand">
+          <h1>CloudCost IQ</h1>
+          <span>FinOps & DevOps Engine</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Platform</div>
+        <a class="nav-item active" data-view="overview" id="nav-overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Overview
+        </a>
+        <a class="nav-item" data-view="estimator" id="nav-estimator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+          Cost Estimator
+        </a>
+        <a class="nav-item" data-view="compare" id="nav-compare">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Configuration Comparison
+        </a>
+        <a class="nav-item" data-view="pricing" id="nav-pricing">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Resource Pricing
+        </a>
+        <a class="nav-item" data-view="optimize" id="nav-optimize">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+          Cost Optimization
+        </a>
+
+        <div class="nav-section-title">Operations & Deliverables</div>
+        <a class="nav-item" data-view="reports" id="nav-reports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Reports & Exports
+        </a>
+        <a class="nav-item" data-view="devops" id="nav-devops">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          DevOps & Status
+        </a>
+        <a class="nav-item" data-view="docs" id="nav-docs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          Documentation
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span class="sidebar-status-badge">
+            <span class="status-dot"></span>
+            System Online
+          </span>
+          <span style="font-family: var(--font-mono); font-size: 0.7rem;">v1.0.0</span>
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-muted);">
+          DevOps Hackathon 2026 Release
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      <!-- Top Navigation Header -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle navigation">
+            ☰
+          </button>
+          <div class="pricing-badge">
+            <span class="status-dot"></span>
+            Pricing Data: <strong>Illustrative Benchmark (v1.2.0 • Oct 2026)</strong>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="currency-badge">Currency: USD ($)</div>
+          <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+            <span id="theme-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </span>
+          </button>
+          <button class="btn btn-sm btn-secondary" onclick="App.openLoadTemplateModal()">
+            ⚡ Presets
+          </button>
+          <button class="btn btn-sm btn-primary" onclick="App.openAddResourceModal()">
+            + Add Resource
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content Views Container -->
+      <main class="content-area">
+
+        <!-- VIEW 1: OVERVIEW DASHBOARD -->
+        <section class="view-section active" id="view-overview">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2>Infrastructure Cost Overview</h2>
+              <p>Real-time telemetry and financial projections derived from active resource configurations.</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn btn-secondary" onclick="App.openLoadTemplateModal()">Load Stack Preset</button>
+              <button class="btn btn-primary" onclick="App.navigateTo('estimator')">Configure Resources →</button>
+            </div>
+          </div>
+
+          <!-- Top Metric Cards Grid -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Estimated Monthly Cost</span>
+                <div class="metric-icon">📅</div>
+              </div>
+              <div class="metric-value" id="metric-total-monthly">$0.00</div>
+              <div class="metric-subtext">Calculated over 730 reference hours</div>
+            </div>
+
+            <div class="metric-card accent-green">
+              <div class="metric-header">
+                <span class="metric-label">Estimated Hourly Cost</span>
+                <div class="metric-icon">⏱️</div>
+              </div>
+              <div class="metric-value" id="metric-total-hourly">$0.0000</div>
+              <div class="metric-subtext">Active billable burn rate / hr</div>
+            </div>
+
+            <div class="metric-card accent-purple">
+              <div class="metric-header">
+                <span class="metric-label">Estimated Annual Cost</span>
+                <div class="metric-icon">📈</div>
+              </div>
+              <div class="metric-value" id="metric-total-annual">$0.00</div>
+              <div class="metric-subtext">12-month projected cloud run rate</div>
+            </div>
+
+            <div class="metric-card accent-orange">
+              <div class="metric-header">
+                <span class="metric-label">Potential Monthly Savings</span>
+                <div class="metric-icon">💡</div>
+              </div>
+              <div class="metric-value" id="metric-potential-savings" style="color: var(--color-success);">$0.00</div>
+              <div class="metric-subtext">Derived from FinOps heuristic engine</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Configured Resources</span>
+                <div class="metric-icon">📦</div>
+              </div>
+              <div class="metric-value" id="metric-resource-count">0</div>
+              <div class="metric-subtext">Active infrastructure components</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Top Expense Category</span>
+                <div class="metric-icon">🎯</div>
+              </div>
+              <div class="metric-value" id="metric-top-category" style="font-size: 1.25rem;">—</div>
+              <div class="metric-subtext">Highest expenditure cluster</div>
+            </div>
+          </div>
+
+          <!-- Charts Grid -->
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">Cost Distribution by Category</h3>
+                  <div class="chart-subtitle">Monthly breakdown across compute, storage, DB, and network</div>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="chart-cost-distribution"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">Multi-Horizon Cost Projection</h3>
+                  <div class="chart-subtitle">Logarithmic horizon projection (Hourly to Annual)</div>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="chart-cost-projection"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saved Scenarios List -->
+          <div class="table-card">
+            <div class="chart-header">
+              <div>
+                <h3 class="chart-title">Saved Infrastructure Scenarios</h3>
+                <div class="chart-subtitle">Persistent SQLite database records available for comparison</div>
+              </div>
+              <button class="btn btn-sm btn-secondary" onclick="App.openSaveScenarioModal()">+ Save Current State</button>
+            </div>
+            <div id="overview-scenarios-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 2: COST ESTIMATOR -->
+        <section class="view-section" id="view-estimator">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2>Cloud Resource Cost Estimator</h2>
+              <p>Model custom infrastructure configurations across 10 billable categories with dynamic operating schedules.</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn btn-outline-danger" onclick="App.clearAllEstimator()">Reset Stack</button>
+              <button class="btn btn-secondary" onclick="App.openSaveScenarioModal()">Save Scenario</button>
+              <button class="btn btn-secondary" onclick="App.openLoadTemplateModal()">Load Template</button>
+              <button class="btn btn-primary" onclick="App.openAddResourceModal()">+ Add Resource</button>
+            </div>
+          </div>
+
+          <!-- Estimator Table Card -->
+          <div class="table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Resource Specification</th>
+                    <th>Provider</th>
+                    <th>Category</th>
+                    <th>Unit Rate</th>
+                    <th>Quantity</th>
+                    <th>Operating Schedule</th>
+                    <th>Hourly ($)</th>
+                    <th>Monthly ($)</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="estimator-table-body">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Sticky Bottom Summary Bar -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; padding:16px 20px; background:var(--bg-input); border-radius:var(--radius-md); border:1px solid var(--border-color); flex-wrap:wrap; gap:16px;">
+              <div style="display:flex; gap:24px; align-items:center;">
+                <div>
+                  <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Monthly Run Rate:</span>
+                  <div class="cell-mono" id="estimator-summary-monthly" style="font-size:1.4rem; font-weight:800; color:var(--accent-cyan);">$0.00</div>
+                </div>
+                <div>
+                  <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Annual Run Rate:</span>
+                  <div class="cell-mono" id="estimator-summary-annual" style="font-size:1.4rem; font-weight:800; color:var(--text-primary);">$0.00</div>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <button class="btn btn-secondary" onclick="App.exportJSON()">Export JSON</button>
+                <button class="btn btn-secondary" onclick="App.exportCSV()">Export CSV</button>
+                <button class="btn btn-primary" onclick="App.navigateTo('compare')">Compare in Dual View →</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 3: CONFIGURATION COMPARISON -->
+        <section class="view-section" id="view-compare">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2>Dual Infrastructure Configuration Comparison</h2>
+              <p>Evaluate Baseline (Config A) versus Target Alternative (Config B) with side-by-side variance and driver breakdown.</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn btn-secondary" onclick="App.openLoadTemplateModal()">Switch Compare Preset</button>
+              <button class="btn btn-primary" onclick="App.navigateTo('optimize')">FinOps Optimizations →</button>
+            </div>
+          </div>
+
+          <!-- Comparison Metrics Cards -->
+          <div class="metrics-grid">
+            <div class="metric-card accent-green">
+              <div class="metric-header">
+                <span class="metric-label">Monthly Cost Difference</span>
+                <div class="metric-icon">💰</div>
+              </div>
+              <div class="metric-value" id="compare-monthly-savings">$0.00</div>
+              <div class="metric-subtext" id="compare-pct-savings">0.0% variance</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Config A (Baseline) Total</span>
+                <div class="metric-icon">🔴</div>
+              </div>
+              <div class="metric-value" id="compare-total-a">$0.00/mo</div>
+              <div class="metric-subtext">Current monolithic baseline</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Config B (Optimized) Total</span>
+                <div class="metric-icon">🟢</div>
+              </div>
+              <div class="metric-value" id="compare-total-b">$0.00/mo</div>
+              <div class="metric-subtext">Right-sized & scheduled architecture</div>
+            </div>
+          </div>
+
+          <!-- Engineering Recommendation & Tradeoffs Banner -->
+          <div class="chart-card" style="margin-bottom:24px; border-left:4px solid var(--accent-cyan);">
+            <h4 style="font-size:1.05rem; margin-bottom:6px;">Architectural Cost Recommendation</h4>
+            <p id="compare-recommendation-text" style="font-size:0.9rem; color:var(--text-primary); margin-bottom:10px; line-height:1.6;">
+              Loading comparison analytics...
+            </p>
+            <div style="font-size:0.78rem; color:var(--text-muted); background:var(--bg-input); padding:10px 14px; border-radius:var(--radius-md);" id="compare-tradeoffs-text">
+              Note: Availability, failover tolerance, and network latency constraints must be benchmarked before reducing capacity.
+            </div>
+          </div>
+
+          <!-- Comparison Side-by-Side Category Chart & Drivers -->
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Category Spending: Config A vs Config B</h3>
+              </div>
+              <div class="chart-container">
+                <canvas id="chart-comparison-categories"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Largest Cost Variance Drivers</h3>
+              </div>
+              <div id="compare-drivers-list">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Side-by-side Resource Diff Table -->
+          <div class="table-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Resource-by-Resource Differential Audit</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Resource</th>
+                    <th>Category</th>
+                    <th>Config A Spec</th>
+                    <th>Config A ($/mo)</th>
+                    <th>Config B Spec</th>
+                    <th>Config B ($/mo)</th>
+                    <th>Difference ($)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="compare-diff-table-body">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 4: RESOURCE PRICING CATALOG -->
+        <section class="view-section" id="view-pricing">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2>Illustrative Cloud Resource Pricing Catalog</h2>
+              <p>Documented rates covering compute, storage, databases, networking, load balancers, and serverless tiers.</p>
+            </div>
+            <div class="search-input-wrapper">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="pricing-search-input" class="form-control" placeholder="Search resources by name, ID, or provider...">
+            </div>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="filter-pills" id="pricing-category-filters">
+            <button class="filter-pill active" data-category="">All Resources</button>
+            <button class="filter-pill" data-category="compute">Compute Instances</button>
+            <button class="filter-pill" data-category="custom_cpu_ram">Custom CPU & RAM</button>
+            <button class="filter-pill" data-category="block_storage">Block Storage</button>
+            <button class="filter-pill" data-category="object_storage">Object Storage</button>
+            <button class="filter-pill" data-category="databases">Managed Databases</button>
+            <button class="filter-pill" data-category="networking">Networking & Egress</button>
+            <button class="filter-pill" data-category="load_balancers">Load Balancers</button>
+            <button class="filter-pill" data-category="containers">Containers & K8s</button>
+            <button class="filter-pill" data-category="serverless">Serverless</button>
+            <button class="filter-pill" data-category="monitoring">Monitoring & Logs</button>
+          </div>
+
+          <div class="table-card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Resource Name & ID</th>
+                    <th>Provider</th>
+                    <th>Category</th>
+                    <th>Illustrative Unit Rate</th>
+                    <th>Specifications & Description</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="pricing-table-body">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 5: COST OPTIMIZATION -->
+        <section class="view-section" id="view-optimize">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2>FinOps Cost Optimization Engine</h2>
+              <p>Rule-based analysis detecting idle assets, scheduling opportunities, oversized VMs, and storage tiering candidates.</p>
+            </div>
+            <div class="view-actions">
+              <div style="background:var(--color-success-bg); color:var(--color-success); padding:8px 16px; border-radius:var(--radius-md); font-weight:700;">
+                Total Potential Monthly Savings: <span id="opt-total-savings-banner" class="cell-mono">$0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="recs-container" id="optimizations-list">
+            <!-- Rendered via JS -->
+          </div>
+        </section>
+
+        <!-- VIEW 6: REPORTS & EXPORTS -->
+        <section class="view-section" id="view-reports">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2>Infrastructure Cost Reports & Exports</h2>
+              <p>Generate verifiable executive reports, JSON configuration payloads, and CSV line-item cost manifests.</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn btn-secondary" onclick="App.exportJSON()">📥 Download JSON</button>
+              <button class="btn btn-secondary" onclick="App.exportCSV()">📊 Download CSV</button>
+              <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+            </div>
+          </div>
+
+          <div id="reports-summary-preview">
+            <!-- Rendered via JS -->
+          </div>
+        </section>
+
+        <!-- VIEW 7: DEVOPS & SYSTEM STATUS -->
+        <section class="view-section" id="view-devops">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2>DevOps Architecture & System Status</h2>
+              <p>Container runtime status, reverse proxy topology, database health, and VM deployment metadata.</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn btn-secondary" onclick="App.renderDevOpsStatus()">🔄 Refresh Status</button>
+              <a href="/docs" target="_blank" class="btn btn-primary">Open FastAPI Swagger UI ↗</a>
+            </div>
+          </div>
+
+          <!-- Status Cards Grid -->
+          <div class="metrics-grid">
+            <div class="metric-card accent-green">
+              <div class="metric-header">
+                <span class="metric-label">FastAPI Backend Status</span>
+                <div class="metric-icon">⚡</div>
+              </div>
+              <div class="metric-value" style="font-size:1.4rem;" id="devops-api-status-badge">HEALTHY</div>
+              <div class="metric-subtext">REST endpoints operational</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">SQLite Persistence</span>
+                <div class="metric-icon">💾</div>
+              </div>
+              <div class="metric-value" style="font-size:1.4rem;" id="devops-db-status">CONNECTED</div>
+              <div class="metric-subtext">Scenario records stored</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Pricing Catalog</span>
+                <div class="metric-icon">📚</div>
+              </div>
+              <div class="metric-value" style="font-size:1.4rem;" id="devops-catalog-count">35+ items</div>
+              <div class="metric-subtext">v1.2.0 illustrative data loaded</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Server Uptime</span>
+                <div class="metric-icon">⏱️</div>
+              </div>
+              <div class="metric-value" style="font-size:1.4rem;" id="devops-uptime">Active</div>
+              <div class="metric-subtext">Uvicorn ASGI runner</div>
+            </div>
+          </div>
+
+          <!-- DevOps Architecture Container Diagram Card -->
+          <div class="table-card">
+            <h3 class="chart-title" style="margin-bottom:14px;">Container Topology & Reverse Proxy Routing</h3>
+            <div style="background:var(--bg-input); padding:20px; border-radius:var(--radius-md); font-family:var(--font-mono); font-size:0.85rem; line-height:1.7;">
+              <pre style="color:var(--accent-cyan); overflow-x:auto;">
+[ Client Browser / Hackathon Judge ]
+                 │
+                 ▼  (HTTP / Port 80 or HTTPS / 443)
+┌────────────────────────────────────────────────────────┐
+│ NGINX Web Server & Reverse Proxy Container            │
+│  - Static Asset Delivery (HTML5, CSS3, JS, Charts)     │
+│  - Proxy Pass /api/ requests -> FastAPI:8000           │
+│  - Gzip Compression & Security Headers                 │
+└───────────────────────┬────────────────────────────────┘
+                        │ (Internal Docker Bridge Network)
+                        ▼
+┌────────────────────────────────────────────────────────┐
+│ FastAPI ASGI Application Container (Python 3.12)       │
+│  - Cost Calculation Engine (Billing-Unit-Aware)        │
+│  - FinOps Rule-Based Optimizer                         │
+│  - OpenAPI Swagger Documentation (/docs)               │
+└───────────────────────┬────────────────────────────────┘
+                        │ (Persistent Docker Volume)
+                        ▼
+┌────────────────────────────────────────────────────────┐
+│ SQLite Database Engine (`data/cloudcost.db`)           │
+│  - Saved Scenarios & DevOps Architecture Presets       │
+└────────────────────────────────────────────────────────┘
+              </pre>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <h3 class="chart-title" style="margin-bottom:14px;">Runtime & Environment Specifications</h3>
+            <div id="devops-sysinfo-content">
+              Loading runtime telemetry...
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 8: BUILT-IN DOCUMENTATION -->
+        <section class="view-section" id="view-docs">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h2>CloudCost IQ Documentation & Guides</h2>
+              <p>Methodology, formulas, API reference, AWS EC2 virtual machine setup, and GitHub Actions CI/CD workflows.</p>
+            </div>
+            <div class="view-actions">
+              <a href="/docs" target="_blank" class="btn btn-secondary">Interactive Swagger Docs ↗</a>
+              <button class="btn btn-primary" onclick="App.navigateTo('estimator')">Launch Estimator →</button>
+            </div>
+          </div>
+
+          <div class="table-card" style="line-height:1.8;">
+            <h3 style="color:var(--accent-cyan); margin-bottom:10px;">1. Cost Calculation Formulas</h3>
+            <div style="background:var(--bg-input); padding:16px; border-radius:var(--radius-md); margin-bottom:20px; font-family:var(--font-mono); font-size:0.85rem;">
+              <div>• <strong>Hourly Resource Cost:</strong> unit_price × quantity (for hourly billing units)</div>
+              <div>• <strong>Monthly Compute Cost:</strong> hourly_rate × quantity × scheduled_usage_hours (e.g. 730h 24/7 or 174h 8x5)</div>
+              <div>• <strong>Non-Hourly Storage / Ingestion Cost:</strong> unit_price × quantity (e.g. $0.0800 × GB stored/mo)</div>
+              <div>• <strong>Total Monthly Cost:</strong> ∑ (monthly_resource_costs)</div>
+              <div>• <strong>Estimated Annual Cost:</strong> total_monthly_cost × 12</div>
+              <div>• <strong>Absolute Savings:</strong> baseline_cost (Config A) − alternative_cost (Config B)</div>
+              <div>• <strong>Percentage Savings:</strong> (savings ÷ baseline_cost) × 100 (when baseline > 0)</div>
+            </div>
+
+            <h3 style="color:var(--accent-cyan); margin-bottom:10px;">2. Complete AWS EC2 Ubuntu Deployment Walkthrough</h3>
+            <div style="background:var(--bg-input); padding:16px; border-radius:var(--radius-md); margin-bottom:20px; font-size:0.86rem;">
+              <ol style="margin-left:20px; display:flex; flex-direction:column; gap:8px;">
+                <li><strong>Launch Ubuntu 24.04 LTS Instance:</strong> Select instance type <code>t4g.small</code> (or <code>t3.micro / t3.small</code>) with 20 GB gp3 root storage.</li>
+                <li><strong>Configure Security Group Inbound Rules:</strong>
+                  <ul style="margin-left:20px;">
+                    <li>Port 22 (SSH) restricted to your administrative IP.</li>
+                    <li>Port 80 (HTTP) open to <code>0.0.0.0/0</code> for public access.</li>
+                    <li>Port 443 (HTTPS) open to <code>0.0.0.0/0</code> for TLS certificate renewal.</li>
+                  </ul>
+                </li>
+                <li><strong>Connect and Install Docker & Docker Compose:</strong>
+                  <pre style="background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; margin:6px 0; overflow-x:auto;">sudo apt-get update && sudo apt-get install -y docker.io docker-compose-v2
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER</pre>
+                </li>
+                <li><strong>Clone Repository & Launch with Docker Compose:</strong>
+                  <pre style="background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; margin:6px 0; overflow-x:auto;">git clone &lt;your-repo-url&gt; cloudcost-iq && cd cloudcost-iq
+docker compose up -d --build
+curl -f http://localhost/api/health</pre>
+                </li>
+                <li><strong>Attach Domain and Configure HTTPS (Certbot Let's Encrypt):</strong>
+                  <pre style="background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; margin:6px 0; overflow-x:auto;">sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d yourdomain.com</pre>
+                </li>
+              </ol>
+            </div>
+
+            <h3 style="color:var(--accent-cyan); margin-bottom:10px;">3. GitHub Actions CI/CD Pipeline</h3>
+            <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:10px;">
+              The repository includes an automated continuous integration and continuous deployment workflow in <code>.github/workflows/deploy.yml</code>.
+              On every push to <code>main</code>, GitHub Actions automatically:
+            </p>
+            <ul style="margin-left:20px; font-size:0.86rem; color:var(--text-secondary); display:flex; flex-direction:column; gap:6px;">
+              <li>Sets up Python and installs test dependencies.</li>
+              <li>Runs the comprehensive <code>pytest</code> test suite (29 tests) verifying calculator accuracy, edge cases, and API routes.</li>
+              <li>Validates pricing dataset schema and integrity.</li>
+              <li>Builds the Docker container images.</li>
+              <li>Deploys via SSH to the target AWS EC2 VM using repository secrets (<code>DEPLOY_HOST</code>, <code>DEPLOY_USER</code>, <code>DEPLOY_SSH_KEY</code>).</li>
+              <li>Executes an automated post-deployment health check on <code>/api/health</code>.</li>
+            </ul>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD RESOURCE -->
+  <div class="modal-overlay" id="modal-add-resource">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Resource to Infrastructure Stack</h3>
+        <button class="modal-close" onclick="App.closeModal('modal-add-resource')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <input type="text" id="modal-resource-search" class="form-control" placeholder="Search catalog by name, category, or instance type...">
+        </div>
+        <div id="modal-resource-catalog-list" style="max-height: 400px; overflow-y: auto;">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('modal-add-resource')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SAVE SCENARIO -->
+  <div class="modal-overlay" id="modal-save-scenario">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3>Save Infrastructure Scenario</h3>
+        <button class="modal-close" onclick="App.closeModal('modal-save-scenario')">✕</button>
+      </div>
+      <form onsubmit="App.handleSaveScenarioSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="save-scenario-name">Scenario Name *</label>
+            <input type="text" id="save-scenario-name" class="form-control" placeholder="e.g. Multi-Region Production Stack" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="save-scenario-env">Target Environment</label>
+            <select id="save-scenario-env" class="form-control">
+              <option value="Production">Production</option>
+              <option value="Staging">Staging</option>
+              <option value="Development">Development</option>
+              <option value="Disaster Recovery">Disaster Recovery</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="save-scenario-desc">Description</label>
+            <textarea id="save-scenario-desc" class="form-control" rows="3" placeholder="Brief notes on architecture assumptions..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="App.closeModal('modal-save-scenario')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save to SQLite Database</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: LOAD TEMPLATES -->
+  <div class="modal-overlay" id="modal-load-template">
+    <div class="modal-content" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>Infrastructure Architecture Templates</h3>
+        <button class="modal-close" onclick="App.closeModal('modal-load-template')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.86rem; color:var(--text-secondary); margin-bottom:16px;">
+          Select a verified DevOps stack preset to populate the Estimator or Dual Comparison slots:
+        </p>
+        <div id="modal-templates-container">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('modal-load-template')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/scenarios.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

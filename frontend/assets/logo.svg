@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <defs>
+    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+    <linearGradient id="chartGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <!-- Cloud outline -->
+  <path d="M14 36H35C39.4183 36 43 32.4183 43 28C43 23.8244 39.7942 20.3995 35.7107 20.0384C34.7865 14.3312 29.8601 10 24 10C18.8475 10 14.4379 13.3857 12.8719 18.1065C8.42398 18.7296 5 22.562 5 27.2C5 32.0598 8.9402 36 13.8 36H14Z" stroke="url(#cloudGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Ascending Cost Bar Analytics -->
+  <rect x="15" y="26" width="3" height="6" rx="1.5" fill="url(#chartGrad)" />
+  <rect x="22" y="21" width="3" height="11" rx="1.5" fill="url(#chartGrad)" />
+  <rect x="29" y="17" width="3" height="15" rx="1.5" fill="url(#chartGrad)" />
+  <!-- Sparkline dot -->
+  <circle cx="30.5" cy="15" r="2" fill="#00f2fe" />
+</svg>
